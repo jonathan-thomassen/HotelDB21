@@ -23,6 +23,7 @@ namespace HotelDBConsole21
             Console.WriteLine("11) Fjern et værelse");
             Console.WriteLine("12) Opdater et værelse");
             Console.WriteLine("13) List alle gæster");
+            Console.WriteLine("14) List alle bookings");
             Console.WriteLine("Q) Afslut");
         }
 
@@ -70,9 +71,31 @@ namespace HotelDBConsole21
                 case "13":
                     ShowGuests();
                     return true;
+                case "14":
+                    ShowBookings();
+                    return true;
                 case "Q":
                 case "q": return false;
                 default: return true;
+            }
+        }
+
+        private static void ShowBookings()
+        {
+            Console.Clear();
+            var bs = new BookingService();
+            var bookings = bs.GetAllBookings();
+
+            if (bookings != null)
+            {
+                foreach (var booking in bookings)
+                {
+                    //Console.WriteLine($"Bookingnr: {booking.}, navn: {booking.Name}, adresse: {booking.Address}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ingen bookings i databasen.");
             }
         }
 

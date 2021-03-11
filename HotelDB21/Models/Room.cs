@@ -6,12 +6,7 @@
         public char Types { get; set; }
         public double Price { get; set; }
         public int HotelNr { get; set; }
-
-        public Room()
-        {
-
-        }
-
+        
         public Room(int nr, char types, double price)
         {
             RoomNr = nr;
