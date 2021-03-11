@@ -21,6 +21,7 @@ namespace HotelDBConsole21.Services
 
             using var connection = new SqlConnection(ConnectionString);
             var command = new SqlCommand(_queryString, connection);
+
             connection.Open();
             var reader = command.ExecuteReader();
             while (reader.Read())
@@ -31,8 +32,12 @@ namespace HotelDBConsole21.Services
                 var hotel = new Hotel(hotelNr, hotelNavn, hotelAdr);
                 hotels.Add(hotel);
             }
+            connection.Close();
 
-            return hotels;
+            if (hotels.Count >= 1)
+                return hotels;
+
+            return null;
         }
 
         public Hotel GetHotelFromId(int hotelNo)
@@ -42,14 +47,20 @@ namespace HotelDBConsole21.Services
             using var connection = new SqlConnection(ConnectionString);
             var command = new SqlCommand(_queryStringFromId, connection);
             command.Parameters.AddWithValue("@ID", hotelNo);
+
             connection.Open();
             var reader = command.ExecuteReader();
-            while (reader.Read())
+            if (reader.Read())
             {
                 var hotelName = reader.GetString(1);
                 var hotelAddress = reader.GetString(2);
                 hotel = new Hotel(hotelNo, hotelName, hotelAddress);
             }
+            else
+            {
+                hotel = null;
+            }
+            connection.Close();
 
             return hotel;
         }

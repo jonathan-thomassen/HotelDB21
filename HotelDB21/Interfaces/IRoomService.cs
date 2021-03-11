@@ -5,12 +5,13 @@ namespace HotelDBConsole21.Interfaces
 {
     public interface IRoomService
     {
+        List<Room> GetAllRooms();
         /// <summary>
         /// henter alle værelser til et hotel fra databasen
         /// </summary>
         /// <param name="hotelNr">Nummeret på hotellet</param>
         /// <returns>Liste af værelser</returns>
-        List<Room> GetAllRoom(int hotelNr);
+        List<Room> GetAllRoomsFromHotelId(int hotelNr);
 
         /// <summary>
         /// Henter et specifik værelse fra database 
@@ -18,7 +19,7 @@ namespace HotelDBConsole21.Interfaces
         /// <param name="roomNr">Udpeger det værelse der ønskes fra databasen</param>
         /// <param name="hotelNr">Nummeret på hotellet</param>
         /// <returns>Den fundne værelse eller null hvis værelset ikke findes</returns>
-        Room GetRoomFromId(int roomNr, int hotelNr);
+        Room GetRoomFromRoomId(int roomNr, int hotelNr);
 
         /// <summary>
         /// Indsætter et ny værelse i databasen
