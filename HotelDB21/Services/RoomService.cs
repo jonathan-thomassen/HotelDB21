@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HotelDBConsole21.Interfaces;
 using HotelDBConsole21.Models;
 using Microsoft.Data.SqlClient;
@@ -8,10 +9,12 @@ namespace HotelDBConsole21.Services
     public class RoomService : Connection, IRoomService
     {
         // indsæt sql strings
-        private string _queryStringAllRooms = "select * from Room";
+        private string _queryStringAllRooms = "select * from Room order by Hotel_No asc, Room_No asc";
         private string _queryStringAllRoomsFromHotelId = "select * from Room where Hotel_No = @HotelID";
         private string _queryStringRoomFromRoomId = "select * from Room where Hotel_No = @HotelID and Room_No = @RoomID";
         private string _insertSql = "insert into Room values (@RoomID, @HotelID, @Type, @Price)";
+        private string _deleteSql = "delete from Room where Hotel_No = @HotelID and Room_No = @RoomID";
+        private string _updateSql = "update Room set Types = @Types, Price = @Price where Hotel_No = @HotelID and Room_No = @RoomID";
 
         public List<Room> GetAllRooms()
         {
@@ -26,9 +29,9 @@ namespace HotelDBConsole21.Services
             {
                 var roomNo = reader.GetInt32(0);
                 var hotelNo = reader.GetInt32(1);
-                var type = reader.GetString(2);
+                var type = Convert.ToChar(reader.GetString(2));
                 var price = reader.GetDouble(3);
-                var room = new Room(roomNo, type[0], price, hotelNo);
+                var room = new Room(roomNo, type, price, hotelNo);
                 rooms.Add(room);
             }
             connection.Close();
@@ -104,14 +107,44 @@ namespace HotelDBConsole21.Services
             return false;
         }
 
-        public bool UpdateRoom(Room room, int roomNr, int hotelNr)
+        public bool UpdateRoom(Room room, int roomNo, int hotelNo)
         {
-            throw new System.NotImplementedException();
+            using var connection = new SqlConnection(ConnectionString);
+            var command = new SqlCommand(_updateSql, connection);
+
+            command.Parameters.AddWithValue("@Price", room.Price);
+            command.Parameters.AddWithValue("@Types", room.Types);
+            command.Parameters.AddWithValue("@HotelID", hotelNo);
+            command.Parameters.AddWithValue("@RoomID", roomNo);
+
+            connection.Open();
+            var commandStatus = command.ExecuteNonQuery();
+            connection.Close();
+
+            if (commandStatus > 0)
+                return true;
+
+            return false;
         }
 
-        public Room DeleteRoom(int roomNr, int hotelNr)
+        public Room DeleteRoom(int roomNo, int hotelNo)
         {
-            throw new System.NotImplementedException();
+            using var connection = new SqlConnection(ConnectionString);
+            var command = new SqlCommand(_deleteSql, connection);
+
+            command.Parameters.AddWithValue("@HotelID", hotelNo);
+            command.Parameters.AddWithValue("@RoomID", roomNo);
+
+            var room = GetRoomFromRoomId(roomNo, hotelNo);
+
+            connection.Open();
+            var commandStatus = command.ExecuteNonQuery();
+            connection.Close();
+
+            if (commandStatus > 0)
+                return room;
+
+            return null;
         }
     }
 }

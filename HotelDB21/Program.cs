@@ -13,7 +13,6 @@ namespace HotelDBConsole21
                 showMenu = MainMenu.Menu();
                 Console.ReadLine();
             }
-            Console.ReadLine();
         }
     }
 }

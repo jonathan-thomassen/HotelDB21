@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HotelDBConsole21.Interfaces;
 using HotelDBConsole21.Models;
 using Microsoft.Data.SqlClient;
@@ -10,6 +9,7 @@ namespace HotelDBConsole21.Services
     {
         private string _queryString = "select * from Hotel";
         private string _queryStringFromId = "select * from Hotel where Hotel_No = @ID";
+        private string _queryStringFromName = "select * from Hotel where Name like @Name";
         private string _insertSql = "insert into Hotel values (@ID, @Name, @Address)";
         private string _deleteSql = "delete from Hotel where Hotel_No = @ID";
         private string _updateSql = "update Hotel set Name = @Name, Address = @Address where Hotel_No = @ID";
@@ -124,7 +124,28 @@ namespace HotelDBConsole21.Services
 
         public List<Hotel> GetHotelsByName(string name)
         {
-            throw new NotImplementedException();
+            var hotels = new List<Hotel>();
+
+            using var connection = new SqlConnection(ConnectionString);
+            var command = new SqlCommand(_queryStringFromName, connection);
+            command.Parameters.AddWithValue("@Name", "%" + name + "%");
+
+            connection.Open();
+            var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                var hotelNr = reader.GetInt32(0);
+                var hotelName = reader.GetString(1);
+                var hotelAdr = reader.GetString(2);
+                var hotel = new Hotel(hotelNr, hotelName, hotelAdr);
+                hotels.Add(hotel);
+            }
+            connection.Close();
+
+            if (hotels.Count >= 1)
+                return hotels;
+
+            return null;
         }
     }
 }
