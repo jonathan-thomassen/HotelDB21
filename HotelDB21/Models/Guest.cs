@@ -6,6 +6,10 @@
         public string Name { get; set; }
         public string Address { get; set; }
 
+        public Guest()
+        {
+        }
+
         public Guest(int guestNo, string name, string address)
         {
             GuestNo = guestNo;

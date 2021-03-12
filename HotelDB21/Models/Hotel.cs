@@ -6,6 +6,10 @@
         public string Name { get; set; }
         public string Address { get; set; }
 
+        public Hotel()
+        {
+        }
+
         public Hotel(int hotelNr, string name, string address)
         {
             HotelNr = hotelNr;

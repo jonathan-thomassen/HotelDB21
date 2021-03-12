@@ -21,7 +21,7 @@ namespace HotelDBConsole21
             Console.WriteLine("9) Søg efter værelse ud fra hotelnr og værelsenr");
             Console.WriteLine("10) Opret nyt værelse");
             Console.WriteLine("11) Fjern et værelse");
-            Console.WriteLine("12) Opdater et værelse");
+            Console.WriteLine("12) Opdatér et værelse");
             Console.WriteLine("13) List alle gæster");
             Console.WriteLine("14) List alle bookings");
             Console.WriteLine("Q) Afslut");
@@ -90,7 +90,9 @@ namespace HotelDBConsole21
             {
                 foreach (var booking in bookings)
                 {
-                    //Console.WriteLine($"Bookingnr: {booking.}, navn: {booking.Name}, adresse: {booking.Address}");
+                    Console.WriteLine($"Bookingnr: {booking.BookingNo}, Gæstnr: {booking.GuestNo}, Hotelnr: {booking.HotelNo}," +
+                                      $" Værelsenr: {booking.RoomNo}, Fra dato: {booking.DateFrom.ToShortDateString()}," +
+                                      $" Til dato: {booking.DateTo.ToShortDateString()}");
                 }
             }
             else
