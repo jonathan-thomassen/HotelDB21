@@ -21,7 +21,7 @@ namespace HotelDBConsole21.Services
             var rooms = new List<Room>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringAllRooms, connection);
+            using var command = new SqlCommand(_queryStringAllRooms, connection);
 
             connection.Open();
             var reader = command.ExecuteReader();
@@ -44,7 +44,7 @@ namespace HotelDBConsole21.Services
             var rooms = new List<Room>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringAllRoomsFromHotelId, connection);
+            using var command = new SqlCommand(_queryStringAllRoomsFromHotelId, connection);
             command.Parameters.AddWithValue("@HotelID", hotelNo);
 
             connection.Open();
@@ -65,7 +65,7 @@ namespace HotelDBConsole21.Services
         public Room GetRoomFromRoomId(int roomNo, int hotelNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringRoomFromRoomId, connection);
+            using var command = new SqlCommand(_queryStringRoomFromRoomId, connection);
             command.Parameters.AddWithValue("@HotelID", hotelNo);
             command.Parameters.AddWithValue("@RoomID", roomNo);
             Room room;
@@ -90,7 +90,7 @@ namespace HotelDBConsole21.Services
         public bool CreateRoom(int hotelNo, Room room)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_insertSql, connection);
+            using var command = new SqlCommand(_insertSql, connection);
 
             command.Parameters.AddWithValue("@RoomID", room.RoomNr);
             command.Parameters.AddWithValue("@HotelID", hotelNo);
@@ -110,7 +110,7 @@ namespace HotelDBConsole21.Services
         public bool UpdateRoom(Room room, int roomNo, int hotelNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_updateSql, connection);
+            using var command = new SqlCommand(_updateSql, connection);
 
             command.Parameters.AddWithValue("@Price", room.Price);
             command.Parameters.AddWithValue("@Types", room.Types);
@@ -130,7 +130,7 @@ namespace HotelDBConsole21.Services
         public Room DeleteRoom(int roomNo, int hotelNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_deleteSql, connection);
+            using var command = new SqlCommand(_deleteSql, connection);
 
             command.Parameters.AddWithValue("@HotelID", hotelNo);
             command.Parameters.AddWithValue("@RoomID", roomNo);

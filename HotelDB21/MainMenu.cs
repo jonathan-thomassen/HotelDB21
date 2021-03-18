@@ -125,8 +125,8 @@ namespace HotelDBConsole21
             Console.Clear();
             Console.WriteLine("Indlæs søgekriterie");
             var hotelName = Console.ReadLine();
-            var hs = new HotelService();
-            var hotels = hs.GetHotelsByName(hotelName);
+            var hs = new HotelServiceAsync();
+            var hotels = hs.GetHotelsByNameAsync(hotelName).Result;
 
             if (hotels != null)
             {
@@ -145,10 +145,10 @@ namespace HotelDBConsole21
         {
             Console.Clear();
             Console.WriteLine("Indlæs hotelnr");
-            int hotelNo = Convert.ToInt32(Console.ReadLine());
-            var hs = new HotelService();
+            var hotelNo = Convert.ToInt32(Console.ReadLine());
+            var hs = new HotelServiceAsync();
 
-            var hotel = hs.GetHotelFromId(hotelNo);
+            var hotel = hs.GetHotelFromIdAsync(hotelNo).Result;
             if (hotel != null)
             {
                 Console.WriteLine($"Hotel-Nr: {hotel.HotelNr}, Navn: {hotel.Name}, Adresse: {hotel.Address}");
@@ -165,9 +165,9 @@ namespace HotelDBConsole21
             var roomType = Console.ReadLine();
             Console.WriteLine("Indlæs ny værelsepris");
             var roomPrice = Convert.ToDouble(Console.ReadLine());
-            var rs = new RoomService();
+            var rs = new RoomServiceAsync();
 
-            Console.WriteLine(rs.UpdateRoom(new Room(roomNo, roomType[0], roomPrice, hotelNo), roomNo, hotelNo)
+            Console.WriteLine(rs.UpdateRoomAsync(new Room(roomNo, roomType[0], roomPrice, hotelNo), roomNo, hotelNo).Result
                 ? "Hotellet blev opdateret."
                 : "Fejl! Hotellet blev ikke opdateret.");
         }
@@ -192,18 +192,13 @@ namespace HotelDBConsole21
 
             Console.WriteLine("Indlæs værelsenr");
             int roomNo = Convert.ToInt32(Console.ReadLine());
-            var rs = new RoomService();
+            var rs = new RoomServiceAsync();
 
-            var room = rs.DeleteRoom(roomNo, hotelNo);
+            var room = rs.DeleteRoomAsync(roomNo, hotelNo).Result;
 
-            if (room != null)
-            {
-                Console.WriteLine($"Værelsenr: {room.RoomNr}, Type: {room.Types}, Pris: {room.Price} er blevet fjernet fra databasen.");
-            }
-            else
-            {
-                Console.WriteLine($"Værelsenummer {roomNo} findes ikke i databasen.");
-            }
+            Console.WriteLine(room != null
+                ? $"Værelsenr: {room.RoomNr}, Type: {room.Types}, Pris: {room.Price} er blevet fjernet fra databasen."
+                : $"Værelsenummer {roomNo} findes ikke i databasen.");
         }
 
         private static void CreateRoom()
@@ -211,9 +206,9 @@ namespace HotelDBConsole21
             Console.Clear();
             Console.WriteLine("Indlæs hotelnr");
             int hotelNo = Convert.ToInt32(Console.ReadLine());
-            var hs = new HotelService();
+            var hs = new HotelServiceAsync();
 
-            var hotel = hs.GetHotelFromId(hotelNo);
+            var hotel = hs.GetHotelFromIdAsync(hotelNo).Result;
             if (hotel != null)
             {
                 Console.WriteLine($"Hotel-Nr: {hotel.HotelNr}, Navn: {hotel.Name}, Adresse: {hotel.Address}");
@@ -230,9 +225,9 @@ namespace HotelDBConsole21
             string roomType = Console.ReadLine();
             Console.WriteLine("Indlæs værelsepris");
             double roomPrice = Convert.ToDouble(Console.ReadLine());
-            var rs = new RoomService();
+            var rs = new RoomServiceAsync();
 
-            Console.WriteLine(rs.CreateRoom(hotelNo, new Room(roomNo, roomType[0], roomPrice))
+            Console.WriteLine(rs.CreateRoomAsync(hotelNo, new Room(roomNo, roomType[0], roomPrice)).Result
                 ? "Værelset blev oprettet."
                 : "Fejl! Værelset blev ikke oprettet.");
         }
@@ -245,10 +240,10 @@ namespace HotelDBConsole21
             Console.WriteLine("Indlæs værelsenr:");
             var roomNo = Convert.ToInt32(Console.ReadLine());
 
-            var rs = new RoomService();
-            var hs = new HotelService();
-            var hotel = hs.GetHotelFromId(hotelNo);
-            var room = rs.GetRoomFromRoomId(roomNo, hotelNo);
+            var rs = new RoomServiceAsync();
+            var hs = new HotelServiceAsync();
+            var hotel = hs.GetHotelFromIdAsync(hotelNo).Result;
+            var room = rs.GetRoomFromRoomIdAsync(roomNo, hotelNo).Result;
 
             Console.WriteLine($"Hotel-Nr: {hotel.HotelNr}, Navn: {hotel.Name}, Adresse: {hotel.Name}.");
             Console.WriteLine($"Værelse-Nr: {room.RoomNr}, Pris: {room.Price:C}, Type: {room.Types}.");
@@ -259,10 +254,10 @@ namespace HotelDBConsole21
             Console.Clear();
             Console.WriteLine("Indlæs hotelnr");
             var hotelNo = Convert.ToInt32(Console.ReadLine());
-            var rs = new RoomService();
-            var hs = new HotelService();
-            var rooms = rs.GetAllRoomsFromHotelId(hotelNo);
-            var hotel = hs.GetHotelFromId(hotelNo);
+            var rs = new RoomServiceAsync();
+            var hs = new HotelServiceAsync();
+            var rooms = rs.GetAllRoomsFromHotelIdAsync(hotelNo).Result;
+            var hotel = hs.GetHotelFromIdAsync(hotelNo).Result;
 
             Console.WriteLine($"Liste over alle værelser på {hotel.Name}:");
             foreach (var room in rooms)
@@ -274,8 +269,8 @@ namespace HotelDBConsole21
         private static void ShowAllRooms()
         {
             Console.Clear();
-            var rs = new RoomService();
-            var rooms = rs.GetAllRooms();
+            var rs = new RoomServiceAsync();
+            var rooms = rs.GetAllRoomsAsync().Result;
             foreach (var room in rooms)
             {
                 Console.WriteLine($"Hotel-Nr: {room.HotelNr}, Værelse-Nr: {room.RoomNr}, Pris: {room.Price:C}, Type: {room.Types}.");
@@ -292,9 +287,9 @@ namespace HotelDBConsole21
             Console.WriteLine("Indlæs ny hotel-adresse");
             string hotelAddress = Console.ReadLine();
 
-            var hs = new HotelService();
+            var hs = new HotelServiceAsync();
 
-            Console.WriteLine(hs.UpdateHotel(new Hotel(hotelNo, hotelName, hotelAddress), hotelNo)
+            Console.WriteLine(hs.UpdateHotelAsync(new Hotel(hotelNo, hotelName, hotelAddress), hotelNo).Result
                 ? "Hotellet blev opdateret."
                 : "Fejl! Hotellet blev ikke opdateret.");
         }
@@ -304,17 +299,12 @@ namespace HotelDBConsole21
             Console.Clear();
             Console.WriteLine("Indlæs hotelnr");
             var hotelNo = Convert.ToInt32(Console.ReadLine());
-            var hs = new HotelService();
-            var hotel = hs.DeleteHotel(hotelNo);
+            var hs = new HotelServiceAsync();
+            var hotel = hs.DeleteHotelAsync(hotelNo).Result;
 
-            if (hotel != null)
-            {
-                Console.WriteLine($"Hotel-Nr: {hotel.HotelNr}, Navn: {hotel.Name}, Adresse: {hotel.Address} er blevet fjernet fra databasen.");
-            }
-            else
-            {
-                Console.WriteLine($"Hotelnummer {hotelNo} findes ikke i databasen.");
-            }
+            Console.WriteLine(hotel != null
+                ? $"Hotel-Nr: {hotel.HotelNr}, Navn: {hotel.Name}, Adresse: {hotel.Address} er blevet fjernet fra databasen."
+                : $"Hotelnummer {hotelNo} findes ikke i databasen.");
         }
 
         private static void ShowHotelFromId()
@@ -322,17 +312,12 @@ namespace HotelDBConsole21
             Console.Clear();
             Console.WriteLine("Indlæs hotelnr");
             var hotelNo = Convert.ToInt32(Console.ReadLine());
-            var hs = new HotelService();
-            var hotel = hs.GetHotelFromId(hotelNo);
+            var hs = new HotelServiceAsync();
+            var hotel = hs.GetHotelFromIdAsync(hotelNo).Result;
 
-            if (hotel != null)
-            {
-                Console.WriteLine($"HotelNr {hotel.HotelNr} Name {hotel.Name} Address {hotel.Address}");
-            }
-            else
-            {
-                Console.WriteLine($"Hotelnummer {hotelNo} findes ikke i databasen.");
-            }
+            Console.WriteLine(hotel != null
+                ? $"HotelNr {hotel.HotelNr} Name {hotel.Name} Address {hotel.Address}"
+                : $"Hotelnummer {hotelNo} findes ikke i databasen.");
         }
 
         private static void CreateHotel()
@@ -345,9 +330,9 @@ namespace HotelDBConsole21
             Console.WriteLine("Indlæs hotel-adresse");
             string hotelAddress = Console.ReadLine();
 
-            var hs = new HotelService();
+            var hs = new HotelServiceAsync();
 
-            Console.WriteLine(hs.CreateHotel(new Hotel(hotelNo, hotelName, hotelAddress))
+            Console.WriteLine(hs.CreateHotelAsync(new Hotel(hotelNo, hotelName, hotelAddress)).Result
                 ? "Hotellet blev oprettet."
                 : "Fejl! Hotellet blev ikke oprettet.");
         }
@@ -355,8 +340,8 @@ namespace HotelDBConsole21
         private static void ShowHotels()
         {
             Console.Clear();
-            var hs = new HotelService();
-            var hotels = hs.GetAllHotel();
+            var hs = new HotelServiceAsync();
+            var hotels = hs.GetAllHotelsAsync().Result;
             foreach (var hotel in hotels)
             {
                 Console.WriteLine($"Hotelnr: {hotel.HotelNr}, navn: {hotel.Name}, adresse: {hotel.Address}");

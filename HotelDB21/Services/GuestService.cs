@@ -19,7 +19,7 @@ namespace HotelDBConsole21.Services
             var guests = new List<Guest>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringAllGuests, connection);
+            using var command = new SqlCommand(_queryStringAllGuests, connection);
             connection.Open();
             var reader = command.ExecuteReader();
             while (reader.Read())
@@ -38,7 +38,7 @@ namespace HotelDBConsole21.Services
         public bool CreateGuest(Guest guest)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_insertSql, connection);
+            using var command = new SqlCommand(_insertSql, connection);
 
             command.Parameters.AddWithValue("@GuestID", guest.GuestNo);
             command.Parameters.AddWithValue("@Name", guest.Name);
@@ -57,7 +57,7 @@ namespace HotelDBConsole21.Services
         public bool UpdateGuest(Guest guest, int guestNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_updateSql, connection);
+            using var command = new SqlCommand(_updateSql, connection);
 
             command.Parameters.AddWithValue("@Name", guest.Name);
             command.Parameters.AddWithValue("@Address", guest.Address);
@@ -76,7 +76,7 @@ namespace HotelDBConsole21.Services
         public Guest DeleteGuest(int guestNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_deleteSql, connection);
+            using var command = new SqlCommand(_deleteSql, connection);
 
             command.Parameters.AddWithValue("@ID", guestNo);
 
@@ -97,7 +97,7 @@ namespace HotelDBConsole21.Services
             var guest = new Guest();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringFromId, connection);
+            using var command = new SqlCommand(_queryStringFromId, connection);
             command.Parameters.AddWithValue("@ID", guestNo);
 
             connection.Open();
@@ -122,7 +122,7 @@ namespace HotelDBConsole21.Services
             var guests = new List<Guest>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringFromName, connection);
+            using var command = new SqlCommand(_queryStringFromName, connection);
             command.Parameters.AddWithValue("@Name", "%" + name + "%");
 
             connection.Open();

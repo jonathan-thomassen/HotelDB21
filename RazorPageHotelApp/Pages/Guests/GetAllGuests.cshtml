@@ -1,0 +1,70 @@
+﻿@page
+@model RazorPageHotelApp.Pages.Guests.GetAllGuestsModel
+@{
+    ViewData["Title"] = "GetAllGuests";
+}
+
+<form method="post">
+    <div class="form-group">
+        <label class="control-label">Filter names:</label>
+        <input asp-for="FilterCriteria" />
+        <label class="control-label">Sort by</label>
+        <select asp-for="SortCriteria">
+            <option value="Number">Number</option>
+            <option value="Name">Name</option>
+            <option value="Address">Address</option>
+        </select>
+        <input type="radio" asp-for="SortAscending" value="@true"/>Asc
+        <input type="radio" asp-for="SortAscending" value="@false"/>Des
+        <input type="submit" asp-page-handler="FilterSort" value="Filter/Sort" />
+    </div>
+</form>
+
+<h4>List of guests</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Guest No
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Guests.Count() != 0)
+        {
+            @foreach (var item in Model.Guests)
+            {
+                <tr>
+                    <td>
+                        @item.GuestNo
+                    </td>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @item.Address
+                    </td>
+                    <td>
+                        <a asp-page="/Guests/Edit" asp-route-id="@item.GuestNo">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-page="/Guests/Delete" asp-route-id="@item.GuestNo">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-page="/Hotels/Create">Create New Guest</a>

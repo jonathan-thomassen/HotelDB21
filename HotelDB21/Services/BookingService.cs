@@ -17,7 +17,7 @@ namespace HotelDBConsole21.Services
             var bookings = new List<Booking>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringAllGuests, connection);
+            using var command = new SqlCommand(_queryStringAllGuests, connection);
             connection.Open();
             var reader = command.ExecuteReader();
             while (reader.Read())
@@ -39,7 +39,7 @@ namespace HotelDBConsole21.Services
         public bool CreateBooking(Booking booking)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_insertSql, connection);
+            using var command = new SqlCommand(_insertSql, connection);
 
             command.Parameters.AddWithValue("@BookingID", booking.BookingNo);
             command.Parameters.AddWithValue("@HotelID", booking.HotelNo);
@@ -61,7 +61,7 @@ namespace HotelDBConsole21.Services
         //public Booking DeleteBooking(int bookingNo)
         //{
         //    using var connection = new SqlConnection(ConnectionString);
-        //    var command = new SqlCommand(_deleteSql, connection);
+        //    using var command = new SqlCommand(_deleteSql, connection);
 
         //    command.Parameters.AddWithValue("@BookingID", bookingNo);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HotelDBConsole21.Interfaces;
 using HotelDBConsole21.Models;
 using Microsoft.Data.SqlClient;
@@ -20,24 +21,35 @@ namespace HotelDBConsole21.Services
             var hotels = new List<Hotel>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryString, connection);
+            using var command = new SqlCommand(_queryString, connection);
 
-            connection.Open();
-            var reader = command.ExecuteReader();
-            while (reader.Read())
+            try
             {
-                var hotelNr = reader.GetInt32(0);
-                var hotelNavn = reader.GetString(1);
-                var hotelAdr = reader.GetString(2);
-                var hotel = new Hotel(hotelNr, hotelNavn, hotelAdr);
-                hotels.Add(hotel);
+                connection.Open();
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    var hotelNr = reader.GetInt32(0);
+                    var hotelNavn = reader.GetString(1);
+                    var hotelAdr = reader.GetString(2);
+                    var hotel = new Hotel(hotelNr, hotelNavn, hotelAdr);
+                    hotels.Add(hotel);
+                }
+
+                connection.Close();
             }
-            connection.Close();
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine($"{sqlException.Message}");
+                return null;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"{exception.Message}");
+                return null;
+            }
 
-            if (hotels.Count >= 1)
-                return hotels;
-
-            return null;
+            return hotels.Count >= 1 ? hotels : null;
         }
 
         public Hotel GetHotelFromId(int hotelNo)
@@ -45,7 +57,7 @@ namespace HotelDBConsole21.Services
             var hotel = new Hotel();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringFromId, connection);
+            using var command = new SqlCommand(_queryStringFromId, connection);
             command.Parameters.AddWithValue("@ID", hotelNo);
 
             connection.Open();
@@ -68,7 +80,7 @@ namespace HotelDBConsole21.Services
         public bool CreateHotel(Hotel hotel)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_insertSql, connection);
+            using var command = new SqlCommand(_insertSql, connection);
 
             command.Parameters.AddWithValue("@ID", hotel.HotelNr);
             command.Parameters.AddWithValue("@Name", hotel.Name);
@@ -87,7 +99,7 @@ namespace HotelDBConsole21.Services
         public bool UpdateHotel(Hotel hotel, int hotelNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_updateSql, connection);
+            using var command = new SqlCommand(_updateSql, connection);
 
             command.Parameters.AddWithValue("@Name", hotel.Name);
             command.Parameters.AddWithValue("@Address", hotel.Address);
@@ -106,7 +118,7 @@ namespace HotelDBConsole21.Services
         public Hotel DeleteHotel(int hotelNo)
         {
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_deleteSql, connection);
+            using var command = new SqlCommand(_deleteSql, connection);
 
             command.Parameters.AddWithValue("@ID", hotelNo);
 
@@ -127,7 +139,7 @@ namespace HotelDBConsole21.Services
             var hotels = new List<Hotel>();
 
             using var connection = new SqlConnection(ConnectionString);
-            var command = new SqlCommand(_queryStringFromName, connection);
+            using var command = new SqlCommand(_queryStringFromName, connection);
             command.Parameters.AddWithValue("@Name", "%" + name + "%");
 
             connection.Open();

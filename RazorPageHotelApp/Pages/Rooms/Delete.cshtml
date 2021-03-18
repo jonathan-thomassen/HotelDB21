@@ -1,0 +1,27 @@
+﻿@page
+@model RazorPageHotelApp.Pages.Rooms.DeleteModel
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Are you sure you want to delete this room?</h1>
+
+<form>
+    <p>
+        Hotel Name: @Model.Hotel.Name
+    </p>
+    <p>
+        Room No: @Model.Room.RoomNo
+    </p>
+    <p>
+        Type: @Model.Room.Types
+    </p>
+    <p>
+        Price: @Model.Room.Price
+    </p>
+</form>
+
+<form method="post">
+    <input type="submit" asp-page-handler="Cancel" asp-route-id="@Model.Hotel.HotelNo" value="Cancel" class="btn" />
+    <input type="submit" asp-page-handler="Delete" asp-route-id[0]="@Model.Hotel.HotelNo" asp-route-id[1]="@Model.Room.RoomNo" value="Delete" class="btn btn-danger" />
+</form>

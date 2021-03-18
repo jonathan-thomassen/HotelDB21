@@ -1,0 +1,90 @@
+﻿@page
+@model RazorPageHotelApp.Pages.Rooms.GetAllRoomsModel
+@{
+    ViewData["Title"] = "GetAllRooms";
+}
+
+<form method="post">
+    <div class="form-group">
+        <label class="control-label">Sort by</label>
+        <select asp-for="SortCriteria">
+            <option value="Number">Number</option>
+            <option value="Type">Type</option>
+            <option value="Price">Price</option>
+        </select>
+        <input type="radio" asp-for="SortAscending" value="@true" />Asc
+        <input type="radio" asp-for="SortAscending" value="@false" />Des
+        <input type="submit" asp-page-handler="Sort" asp-route-id="@Model.Hotel.HotelNo" value="Sort" />
+    </div>
+</form>
+
+<h4>List of rooms in @Model.Hotel.Name</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Room No
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Rooms.Count() != 0)
+        {
+            @foreach (var item in Model.Rooms)
+            {
+                <tr>
+                    <td>
+                        @item.RoomNo
+                    </td>
+                    <td>
+                        @switch (item.Types)
+                        {
+                            case 'D':
+                                @("Double")
+                                break;
+                            case 'F':
+                                @("Family")
+                                break;
+                            case 'S':
+                                @("Single")
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @{
+                            var s = $"{item.Price:C}";
+                        }
+                        @s
+                    </td>
+                    <td>
+
+
+                        <a asp-page="/Rooms/Edit" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Edit</a>
+
+
+                    </td>
+                    <td>
+
+
+                        <a asp-page="/Rooms/Delete" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Delete</a>
+
+
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-page="/Rooms/Create" asp-route-id="@Model.Hotel.HotelNo">Create New Room</a>
