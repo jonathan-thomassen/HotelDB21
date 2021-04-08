@@ -4,46 +4,76 @@
     ViewData["Title"] = "GetAllHotels";
 }
 
-<form method="post">
-    <div class="form-group">
-        <label class="control-label">Filter names:</label>
-        <input asp-for="FilterCriteria" />
-        <label class="control-label">Sort by</label>
-        <select asp-for="SortCriteria">
-            <option value="Number">Number</option>
-            <option value="Name">Name</option>
-            <option value="Address">Address</option>
-        </select>
-        <input type="radio" asp-for="SortAscending" value="@true"/>Asc
-        <input type="radio" asp-for="SortAscending" value="@false"/>Des
-        <input type="submit" asp-page-handler="FilterSort" value="Filter/Sort" />
-    </div>
-</form>
+<script type="text/javascript">
+    function ClearTextBox() {
+        document.getElementById("filterCriteria").value = "";
+    }
+</script>
 
-<h4>List of hotels</h4>
+<h2>List of hotels</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Hotel No
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Address
-            </th>
-            <th>
-            </th>
-            <th>
-            </th>
-            <th>
-            </th>
+            <form method="post">
+                <th>
+                    No
+                    @if (Model.SortChoice == SortChoices.NumberAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByNumberDes" style="border-style: solid; background-color: white;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.NumberDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByNumberAsc" style="border-style: solid; background-color: white;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByNumberAsc" style="border-style: solid; background-color: white;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                    Name
+                    <input type="text" style="margin-right: -25px" asp-for="FilterCriteria" id="filterCriteria" onchange="this.form.submit();" />
+                    <input type="button" style="border-style: none; background-color: white; padding-left: 0px; padding-right: 0px" value="&#128473;" onclick="ClearTextBox(); this.form.submit();" />
+                    @if (Model.SortChoice == SortChoices.NameAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByNameDes" style="border-style:solid; background-color: white; margin-left: 6px;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.NameDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByNameAsc" style="border-style:solid; background-color: white; margin-left: 6px;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByNameAsc" style="border-style:solid; background-color: white; margin-left: 6px;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                    Address
+                    @if (Model.SortChoice == SortChoices.AddressAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByAddressDes" style="border-style:solid; background-color: white;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.AddressDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByAddressAsc" style="border-style:solid; background-color: white;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByAddressAsc" style="border-style:solid; background-color: white;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </form>
         </tr>
     </thead>
     <tbody>
-        @if (Model.Hotels.Count() != 0)
+        @if (Model.Hotels != null)
         {
             @foreach (var item in Model.Hotels)
             {
@@ -58,7 +88,7 @@
                         @item.Address
                     </td>
                     <td>
-                        <a asp-page="/Rooms/GetAllRooms" asp-page-handler="MyRooms" asp-route-id="@item.HotelNo">Rooms in hotel</a>
+                        <a asp-page="/Rooms/GetAllRoomsFromHotel" asp-page-handler="SortByRoomNumberAsc" asp-route-id="@item.HotelNo">Rooms in hotel</a>
                     </td>
                     <td>
                         <a asp-page="/Hotels/Edit" asp-route-id="@item.HotelNo">Edit</a>
@@ -72,4 +102,4 @@
     </tbody>
 </table>
 
-<a asp-page="/Hotels/Create">Create New Hotel</a>
+<a asp-page="/Hotels/Create">Create new hotel</a>

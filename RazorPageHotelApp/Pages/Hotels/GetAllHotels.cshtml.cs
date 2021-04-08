@@ -11,8 +11,7 @@ namespace RazorPageHotelApp.Pages.Hotels
     public class GetAllHotelsModel : PageModel
     {
         [BindProperty] public string FilterCriteria { get; set; }
-        [BindProperty] public string SortCriteria { get; set; }
-        [BindProperty] public bool SortAscending { get; set; } = true;
+        [BindProperty] public SortChoices SortChoice { get; set; } = SortChoices.NumberAsc;
         public List<Hotel> Hotels { get; private set; }
 
         private readonly IHotelService _hotelService;
@@ -28,25 +27,56 @@ namespace RazorPageHotelApp.Pages.Hotels
             return Page();
         }
 
-        public async Task<IActionResult> OnPostFilterSortAsync()
+        public async Task<IActionResult> OnPostSortByNumberAscAsync()
         {
             Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.HotelNo select hotel).ToList();
+            SortChoice = SortChoices.NumberAsc;
 
-            switch (SortCriteria)
-            {
-                case "Number":
-                    Hotels = (from hotel in Hotels orderby hotel.HotelNo select hotel).ToList();
-                    break;
-                case "Name":
-                    Hotels = (from hotel in Hotels orderby hotel.Name select hotel).ToList();
-                    break;
-                case "Address":
-                    Hotels = (from hotel in Hotels orderby hotel.Address select hotel).ToList();
-                    break;
-            }
+            return Page();
+        }
 
-            if (!SortAscending)
-                Hotels.Reverse();
+        public async Task<IActionResult> OnPostSortByNumberDesAsync()
+        {
+            Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.HotelNo descending select hotel).ToList();
+            SortChoice = SortChoices.NumberDes;
+            
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostSortByNameAscAsync()
+        {
+            Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.Name select hotel).ToList();
+            SortChoice = SortChoices.NameAsc;
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostSortByNameDesAsync()
+        {
+            Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.Name descending select hotel).ToList();
+            SortChoice = SortChoices.NameDes;
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostSortByAddressAscAsync()
+        {
+            Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.Address select hotel).ToList();
+            SortChoice = SortChoices.AddressAsc;
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostSortByAddressDesAsync()
+        {
+            Hotels = await _hotelService.GetHotelsByName(FilterCriteria);
+            Hotels = (from hotel in Hotels orderby hotel.Address descending select hotel).ToList();
+            SortChoice = SortChoices.AddressDes;
 
             return Page();
         }

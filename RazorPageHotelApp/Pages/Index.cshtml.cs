@@ -19,7 +19,7 @@ namespace RazorPageHotelApp.Pages
 
         public IActionResult OnGet()
         {
-            return RedirectToPage("Hotels/GetAllHotels");
+            return RedirectToPage("Hotels/GetAllHotels", "SortByNumberAsc");
         }
     }
 }

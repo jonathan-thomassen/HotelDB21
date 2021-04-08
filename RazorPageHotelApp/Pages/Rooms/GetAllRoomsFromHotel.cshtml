@@ -1,0 +1,112 @@
+﻿@page
+@model RazorPageHotelApp.Pages.Rooms.GetAllRoomsFromHotelModel
+@{
+    ViewData["Title"] = "GetAllRoomsFromHotel";
+}
+
+<h2>List of rooms in @Model.Hotel.Name</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <form method="post">
+                <th>
+                    Room No
+                    @if (Model.SortChoice == SortChoices.RoomNumberAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByRoomNumberDes" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.RoomNumberDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByRoomNumberAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByRoomNumberAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                    Type
+                    <select asp-for="TypeFilter" onchange="this.form.submit();">
+                        <option value="">All</option>
+                        <option value="S">Single</option>
+                        <option value="D">Double</option>
+                        <option value="F">Family</option>
+                    </select>
+                    @if (Model.SortChoice == SortChoices.TypeAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByTypeDes" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.TypeDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByTypeAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByTypeAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                    Price
+                    @if (Model.SortChoice == SortChoices.PriceAsc)
+                    {
+                        <input type="submit" asp-page-handler="SortByPriceDes" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9650">
+                    }
+                    else if (Model.SortChoice == SortChoices.PriceDes)
+                    {
+                        <input type="submit" asp-page-handler="SortByPriceAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&#9660">
+                    }
+                    else
+                    {
+                        <input type="submit" asp-page-handler="SortByPriceAsc" asp-route-id="@Model.Hotel.HotelNo" style="border-style:solid; background-color: white;" value="&emsp;" />
+                    }
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </form>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Rooms.Count() != 0)
+        {
+            @foreach (var item in Model.Rooms)
+            {
+                <tr>
+                    <td>
+                        @item.RoomNo
+                    </td>
+                    <td>
+                        @switch (item.Types)
+                        {
+                            case 'D':
+                                @("Double")
+                                break;
+                            case 'F':
+                                @("Family")
+                                break;
+                            case 'S':
+                                @("Single")
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @{
+                            var s = $"{item.Price:C}";
+                        }
+                        @s
+                    </td>
+                    <td>
+                        <a asp-page="/Rooms/Edit" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Edit</a>
+                    </td>
+                    <td>
+                        <a asp-page="/Rooms/Delete" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<a asp-page="/Rooms/Create" asp-route-id="@Model.Hotel.HotelNo">Create New Room</a>

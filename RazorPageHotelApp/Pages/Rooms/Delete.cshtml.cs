@@ -29,13 +29,13 @@ namespace RazorPageHotelApp.Pages.Rooms
 
         public IActionResult OnPostCancel(int id)
         {
-            return RedirectToPage("/Rooms/GetAllRooms", "MyRooms", new { id });
+            return RedirectToPage("/Rooms/GetAllRoomsFromHotel", "SortByRoomNumberAsc", new { id });
         }
 
         public async Task<IActionResult> OnPostDeleteAsync(int[] id)
         {
             await _roomService.DeleteRoom(id[1], id[0]);
-            return RedirectToPage("/Rooms/GetAllRooms", "MyRooms", new { id = id[0] });
+            return RedirectToPage("/Rooms/GetAllRoomsFromHotel", "SortByRoomNumberAsc", new { id = id[0] });
         }
     }
 }

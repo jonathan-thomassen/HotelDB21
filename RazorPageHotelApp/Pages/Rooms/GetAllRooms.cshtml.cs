@@ -11,15 +11,16 @@ namespace RazorPageHotelApp.Pages.Rooms
 {
     public class GetAllRoomsModel : PageModel
     {
-        [BindProperty] public string SortCriteria { get; set; }
-        [BindProperty] public bool SortAscending { get; set; } = true;
+        [BindProperty] public SortChoices SortChoice { get; set; } = SortChoices.RoomNumberAsc;
+        [BindProperty] public char TypeFilter { get; set; }
         public List<Room> Rooms { get; private set; }
-        public Hotel Hotel { get; private set; }
+        public List<Hotel> Hotels { get; private set; }
+        //public List<> RoomsWithHotelNames { get; private set; }
 
         private readonly IRoomService _roomService;
         private readonly IHotelService _hotelService;
 
-        public GetAllRoomsModel(IHotelService hService, IRoomService rService)
+        public GetAllRoomsModel(IRoomService rService, IHotelService hService)
         {
             _roomService = rService;
             _hotelService = hService;
@@ -28,36 +29,63 @@ namespace RazorPageHotelApp.Pages.Rooms
         public async Task<IActionResult> OnGetAsync()
         {
             Rooms = await _roomService.GetAllRooms();
+            Hotels = await _hotelService.GetAllHotels();
             return Page();
         }
 
-        public async Task<IActionResult> OnGetMyRoomsAsync(int id)
+        public async Task<IActionResult> OnPostSortByRoomNumberAscAsync()
         {
-            Hotel = await _hotelService.GetHotelFromId(id);
-            Rooms = await _roomService.GetAllRoomsFromHotelId(id);
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            Rooms = (from room in Rooms orderby room.RoomNo select room).ToList();
+            SortChoice = SortChoices.RoomNumberAsc;
+
             return Page();
         }
-
-        public async Task<IActionResult> OnPostSortAsync(int id)
+        public async Task<IActionResult> OnPostSortByRoomNumberDesAsync()
         {
-            Hotel = await _hotelService.GetHotelFromId(id);
-            Rooms = await _roomService.GetAllRoomsFromHotelId(id);
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            Rooms = (from room in Rooms orderby room.RoomNo descending select room).ToList();
+            SortChoice = SortChoices.RoomNumberDes;
 
-            switch (SortCriteria)
-            {
-                case "Number":
-                    Rooms = (from room in Rooms orderby room.RoomNo select room).ToList();
-                    break;
-                case "Type":
-                    Rooms = (from room in Rooms orderby room.Types select room).ToList();
-                    break;
-                case "Price":
-                    Rooms = (from room in Rooms orderby room.Price select room).ToList();
-                    break;
-            }
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSortByHotelNumberAscAsync()
+        {
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            Rooms = (from room in Rooms orderby room.HotelNo select room).ToList();
+            SortChoice = SortChoices.HotelNumberAsc;
 
-            if (!SortAscending)
-                Rooms.Reverse();
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSortByHotelNumberDesAsync()
+        {
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            Rooms = (from room in Rooms orderby room.HotelNo descending select room).ToList();
+            SortChoice = SortChoices.HotelNumberDes;
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSortByHotelNameAscAsync()
+        {
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            Rooms = (from room in Rooms orderby room.HotelNo descending select room).ToList();
+            SortChoice = SortChoices.HotelNumberDes;
+
+            return Page();
+        }
+        public async Task<IActionResult> OnPostSortByHotelNameDesAsync()
+        {
+            Rooms = await _roomService.GetAllRoomsFilterByType(TypeFilter);
+            var roomsNew = (from room1 in Rooms
+                            select new
+                            {
+                                room1.HotelNo,
+                                HotelName = (from room2 in Rooms
+                                             join hotel in _hotelService.GetAllHotels().Result on room2.HotelNo equals hotel.HotelNo
+                                             select hotel.Name),
+
+                            }).ToList();
+            SortChoice = SortChoices.HotelNumberDes;
 
             return Page();
         }

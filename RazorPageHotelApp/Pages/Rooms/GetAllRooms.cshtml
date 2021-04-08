@@ -4,38 +4,38 @@
     ViewData["Title"] = "GetAllRooms";
 }
 
-<form method="post">
-    <div class="form-group">
-        <label class="control-label">Sort by</label>
-        <select asp-for="SortCriteria">
-            <option value="Number">Number</option>
-            <option value="Type">Type</option>
-            <option value="Price">Price</option>
-        </select>
-        <input type="radio" asp-for="SortAscending" value="@true" />Asc
-        <input type="radio" asp-for="SortAscending" value="@false" />Des
-        <input type="submit" asp-page-handler="Sort" asp-route-id="@Model.Hotel.HotelNo" value="Sort" />
-    </div>
-</form>
-
-<h4>List of rooms in @Model.Hotel.Name</h4>
+<h2>List of rooms</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Room No
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Price
-            </th>
-            <th>
-            </th>
-            <th>
-            </th>
+            <form method="post">
+                <th>
+                    Room No
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.RoomNumberAsc" onchange="this.form.submit();" />Asc
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.RoomNumberDes" onchange="this.form.submit();" />Des
+                </th>
+                <th>
+                    Type
+                    <select asp-for="TypeFilter" onchange="this.form.submit();">
+                        <option value="">All</option>
+                        <option value="S">Single</option>
+                        <option value="D">Double</option>
+                        <option value="F">Family</option>
+                    </select>
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.TypeAsc" onchange="this.form.submit();" />Asc
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.TypeDes" onchange="this.form.submit();" />Des
+                </th>
+                <th>
+                    Price
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.PriceAsc" onchange="this.form.submit();" />Asc
+                    <input type="radio" asp-for="SortChoice" value="@SortChoices.PriceDes" onchange="this.form.submit();" />Des
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </form>
         </tr>
     </thead>
     <tbody>
@@ -68,23 +68,13 @@
                         @s
                     </td>
                     <td>
-
-
                         <a asp-page="/Rooms/Edit" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Edit</a>
-
-
                     </td>
                     <td>
-
-
                         <a asp-page="/Rooms/Delete" asp-route-id[0]="@item.HotelNo" asp-route-id[1]="@item.RoomNo">Delete</a>
-
-
                     </td>
                 </tr>
             }
         }
     </tbody>
 </table>
-
-<a asp-page="/Rooms/Create" asp-route-id="@Model.Hotel.HotelNo">Create New Room</a>

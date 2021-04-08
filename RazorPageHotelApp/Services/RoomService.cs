@@ -13,6 +13,8 @@ namespace RazorPageHotelApp.Services
         private const string QueryStringAllRooms = "select * from Room order by Hotel_No asc, Room_No asc";
         private const string QueryStringAllRoomsFromHotelId = "select * from Room where Hotel_No = @HotelID";
         private const string QueryStringRoomFromRoomId = "select * from Room where Hotel_No = @HotelID and Room_No = @RoomID";
+        private const string QueryStringRoomsFromHotelIdFilterByType = "select * from Room where Types like @Type and Hotel_No = @HotelID";
+        private const string QueryStringFilterByType = "select * from Room where Types like @Type";
         private const string InsertSql = "insert into Room values (@RoomID, @HotelID, @Type, @Price)";
         private const string DeleteSql = "delete from Room where Hotel_No = @HotelID and Room_No = @RoomID";
         private const string UpdateSql = "update Room set Types = @Types, Price = @Price where Hotel_No = @HotelID and Room_No = @RoomID";
@@ -222,6 +224,83 @@ namespace RazorPageHotelApp.Services
 
         public RoomService(IConfiguration configuration) : base(configuration)
         {
+        }
+
+        public async Task<List<Room>> GetAllRoomsFilterByType(char type)
+        {
+            try
+            {
+                var rooms = new List<Room>();
+
+                await using var connection = new SqlConnection(ConnectionString);
+                await using var command = new SqlCommand(QueryStringFilterByType, connection);
+
+                command.Parameters.AddWithValue("@Type", "%" + type + "%");
+
+                await connection.OpenAsync();
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    var roomNo = reader.GetInt32(0);
+                    var dbHotelNo = reader.GetInt32(1);
+                    var dbType = reader.GetString(2);
+                    var price = reader.GetDouble(3);
+                    var room = new Room(roomNo, dbType[0], price, dbHotelNo);
+                    rooms.Add(room);
+                }
+                await connection.CloseAsync();
+
+                return rooms;
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine($"{sqlException.Message}");
+                return null;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"{exception.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<Room>> GetAllRoomsFromHotelIdFilterByType(int hotelNo, char type)
+        {
+            try
+            {
+                var rooms = new List<Room>();
+
+                await using var connection = new SqlConnection(ConnectionString);
+                await using var command = new SqlCommand(QueryStringRoomsFromHotelIdFilterByType, connection);
+
+                command.Parameters.AddWithValue("@HotelID", hotelNo);
+                command.Parameters.AddWithValue("@Type", "%" + type + "%");
+
+                await connection.OpenAsync();
+                var reader = await command.ExecuteReaderAsync();
+                while (reader.Read())
+                {
+                    var roomNo = reader.GetInt32(0);
+                    var dbHotelNo = reader.GetInt32(1);
+                    var dbType = reader.GetString(2);
+                    var price = reader.GetDouble(3);
+                    var room = new Room(roomNo, dbType[0], price, dbHotelNo);
+                    rooms.Add(room);
+                }
+                await connection.CloseAsync();
+
+                return rooms;
+            }
+            catch (SqlException sqlException)
+            {
+                Console.WriteLine($"{sqlException.Message}");
+                return null;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"{exception.Message}");
+                return null;
+            }
         }
     }
 }
