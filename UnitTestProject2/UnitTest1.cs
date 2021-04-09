@@ -1,6 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace UnitTestRazorPageHotelApp
+namespace UnitTestProject2
 {
     [TestClass]
     public class UnitTest1

@@ -34,7 +34,7 @@ namespace RazorPageHotelApp.Pages.Rooms
         public async Task<IActionResult> OnPostAsync(int id)
         {
             await _roomService.CreateRoom(id, Room);
-            return RedirectToPage("/Rooms/GetAllRooms", "MyRooms", new {id});
+            return RedirectToPage("/Rooms/GetAllRoomsFromHotel", "SortByRoomNumberAsc", new {id});
         }
     }
 }

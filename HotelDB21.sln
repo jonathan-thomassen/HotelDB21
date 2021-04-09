@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelDBConsole21", "HotelDB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RazorPageHotelApp", "RazorPageHotelApp\RazorPageHotelApp.csproj", "{334C9471-E002-4DDB-93EC-C2185BFC8212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestRazorPageHotelApp", "UnitTestRazorPageHotelApp\UnitTestRazorPageHotelApp.csproj", "{06991F59-B164-4A27-90AC-5F1F7675E663}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestRazorPageHotelApp", "UnitTestRazorPageHotelApp\UnitTestRazorPageHotelApp.csproj", "{06991F59-B164-4A27-90AC-5F1F7675E663}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
