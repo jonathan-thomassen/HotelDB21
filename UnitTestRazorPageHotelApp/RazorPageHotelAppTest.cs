@@ -25,7 +25,6 @@ namespace UnitTestRazorPageHotelApp
             Hotel newHotel = new Hotel(1001, "TestHotel", "Testvej");
             bool ok = hotelService.CreateHotel(newHotel).Result;
             hotels = hotelService.GetAllHotels().Result;
-
             int numbersOfHotelsAfter = hotels.Count;
 
             //Assert
