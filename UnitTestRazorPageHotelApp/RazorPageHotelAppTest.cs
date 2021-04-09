@@ -11,7 +11,7 @@ namespace UnitTestRazorPageHotelApp
 
         // denne klasse tester HotelService
 
-        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=HotelDB2021;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        private const string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=HotelDB21;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
         [TestMethod]
         public void TestAddHotel()
@@ -27,14 +27,10 @@ namespace UnitTestRazorPageHotelApp
             hotels = hotelService.GetAllHotels().Result;
 
             int numbersOfHotelsAfter = hotels.Count;
-            Hotel h = hotelService.DeleteHotel(newHotel.HotelNo).Result;
 
             //Assert
             Assert.AreEqual(numbersOfHotelsBefore + 1, numbersOfHotelsAfter);
             Assert.IsTrue(ok);
-            Assert.AreEqual(h.HotelNo, newHotel.HotelNo);
-
         }
     }
-
 }

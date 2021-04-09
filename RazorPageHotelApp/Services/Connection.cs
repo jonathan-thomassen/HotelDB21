@@ -12,5 +12,12 @@ namespace RazorPageHotelApp.Services
             Configuration = configuration;
             ConnectionString = Configuration["ConnectionStrings:DefaultConnection"];
         }
+
+        protected Connection(string connectionString)
+        {
+            Configuration = null;
+            ConnectionString = connectionString;
+        }
+
     }
 }

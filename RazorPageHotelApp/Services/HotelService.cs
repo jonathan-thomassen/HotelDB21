@@ -218,5 +218,9 @@ namespace RazorPageHotelApp.Services
         public HotelService(IConfiguration configuration) : base(configuration)
         {
         }
+
+        public HotelService(string connectionString) : base(connectionString)
+        {
+        }
     }
 }
